@@ -27,4 +27,7 @@ export type GameStore = {
   updateTeamName: (id: Id, name: string) => void;
   updateTeamPlayerCount: (id: Id, playerCount: number) => void;
   updatePlayerName: (teamId: Id, playerId: Id, name: string) => void;
+  currentRound: number;
+  currentTeamIndex: number;
+  nextTurn: () => void;
 };
