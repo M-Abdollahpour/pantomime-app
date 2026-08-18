@@ -2,16 +2,19 @@ import { nanoid } from "nanoid";
 import { create } from "zustand";
 import type { GameStore } from "~/types/type";
 import { persist } from "zustand/middleware";
+import { CATEGORIES } from "../data/categories";
+import { DIFFICULTY_POINTS } from "~/types/categoryType";
 
 export const useGameStore = create<GameStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       teams: [
         {
           id: nanoid(),
           name: "Team 1",
           avatarId: 1,
           playerCount: 2,
+          score: 0,
           players: [
             { id: nanoid(), name: "Player 1" },
             { id: nanoid(), name: "Player 2" },
@@ -22,6 +25,7 @@ export const useGameStore = create<GameStore>()(
           name: "Team 2",
           avatarId: 2,
           playerCount: 2,
+          score: 0,
           players: [
             { id: nanoid(), name: "Player 1" },
             { id: nanoid(), name: "Player 2" },
@@ -108,7 +112,36 @@ export const useGameStore = create<GameStore>()(
           ),
         }));
       },
+      categories: CATEGORIES,
+      usedWords: [],
+      pickWord: (categoryId, difficulty) => {
+        const { categories, usedWords } = get();
+        const category = categories.find((c) => c.id === categoryId);
+        if (!category) return null;
+        const allWords = category.words[difficulty];
+        const availableWords = allWords.filter(
+          (word) => !usedWords.includes(word),
+        );
+        if (availableWords.length === 0) return null;
+        const randomIndex = Math.floor(Math.random() * availableWords.length);
+        const selectedWord = availableWords[randomIndex];
+        set((state) => ({
+          usedWords: [...state.usedWords, selectedWord],
+        }));
+        return selectedWord;
+      },
+      addScore: (teamId, difficulty) => {
+        const points = DIFFICULTY_POINTS[difficulty];
+        set(({ teams }) => ({
+          teams: teams.map((team) =>
+            team.id === teamId ? { ...team, score: team.score + points } : team,
+          ),
+        }));
+      },
+      currentWord: null,
+      setCurrentWord: (word) => set(() => ({ currentWord: word })),
     }),
+
     {
       name: "pantomim-game-store",
     },

@@ -1,4 +1,6 @@
-export type Id = number | string;
+import type { Category, Difficulty } from "./categoryType";
+
+export type Id = string;
 
 export type Player = {
   id: Id;
@@ -11,6 +13,7 @@ export type Team = {
   avatarId: number;
   playerCount: number;
   players: Player[];
+  score: number;
 };
 
 export type GameSettings = {
@@ -30,4 +33,10 @@ export type GameStore = {
   currentRound: number;
   currentTeamIndex: number;
   nextTurn: () => void;
+  categories: Category[];
+  usedWords: string[];
+  pickWord: (categoryId: Id, difficulty: Difficulty) => string | null;
+  addScore: (teamId: Id, difficulty: Difficulty) => void;
+  currentWord: string | null;
+  setCurrentWord: (word: string | null) => void;
 };

@@ -10,5 +10,6 @@ export default [
   ...prefix("/startgame", [
     index("routes/StartGame.tsx"),
     route("pickword", "routes/PickWord.tsx"),
+    route("pickword/starttimer", "routes/StartTimer.tsx"),
   ]),
 ] satisfies RouteConfig;

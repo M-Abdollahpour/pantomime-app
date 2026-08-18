@@ -40,9 +40,10 @@ export default function Home() {
   });
   const onSubmit = ({ name }: TeamFormValues) => {
     addTeam({
-      name,
+      name: capitalString(name),
       avatarId: 0,
       playerCount: 2,
+      score: 0,
       players: [
         { id: nanoid(), name: "Player 1" },
         { id: nanoid(), name: "Player 2" },
@@ -117,7 +118,11 @@ export default function Home() {
                       className="border rounded-lg px-2 py-1"
                       defaultValue={player.name}
                       onBlur={(event) =>
-                        updatePlayerName(item.id, player.id, event.target.value)
+                        updatePlayerName(
+                          item.id,
+                          player.id,
+                          capitalString(event.target.value),
+                        )
                       }
                     />
                   ))}

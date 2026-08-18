@@ -15,6 +15,8 @@ export default function StartGame() {
           <li key={item.id} className="flex items-center gap-5">
             <div className="w-30 h-30 flex items-center justify-center bg-amber-400 rounded-lg">
               {item.name}
+              <br />
+              {item.score}
             </div>
             {index < team.length - 1 && <span>Vs</span>}
           </li>
