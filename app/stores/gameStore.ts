@@ -130,18 +130,66 @@ export const useGameStore = create<GameStore>()(
         }));
         return selectedWord;
       },
-      addScore: (teamId, difficulty) => {
-        const points = DIFFICULTY_POINTS[difficulty];
-        set(({ teams }) => ({
-          teams: teams.map((team) =>
-            team.id === teamId ? { ...team, score: team.score + points } : team,
-          ),
+      currentWord: null,
+      currentCategoryId: null,
+      currentDifficulty: null,
+      rerollsUsed: 0,
+      setCurrentWord: (word) => set(() => ({ currentWord: word })),
+      selectWord: (categoryId, difficulty) => {
+        const word = get().pickWord(categoryId, difficulty);
+        set(() => ({
+          currentWord: word,
+          currentCategoryId: categoryId,
+          currentDifficulty: difficulty,
+          rerollsUsed: 0,
         }));
       },
-      currentWord: null,
-      setCurrentWord: (word) => set(() => ({ currentWord: word })),
-    }),
+      rerollWord: () => {
+        const { currentCategoryId, currentDifficulty, rerollsUsed } = get();
+        if (!currentCategoryId || !currentDifficulty) return;
+        if (rerollsUsed >= 3) return;
+        const word = get().pickWord(currentCategoryId, currentDifficulty);
+        set((state) => ({
+          currentWord: word,
+          rerollsUsed: state.rerollsUsed + 1,
+        }));
+      },
+      correctGuess: () => {
+        const { currentDifficulty, rerollsUsed, teams, currentTeamIndex } =
+          get();
+        if (currentDifficulty) {
+          const points = Math.max(
+            0,
+            DIFFICULTY_POINTS[currentDifficulty] - rerollsUsed,
+          );
+          const teamId = teams[currentTeamIndex].id;
+          set((state) => ({
+            teams: state.teams.map((team) =>
+              team.id === teamId
+                ? { ...team, score: team.score + points }
+                : team,
+            ),
+          }));
+        }
+        set(() => ({
+          currentWord: null,
+          currentCategoryId: null,
+          currentDifficulty: null,
+          rerollsUsed: 0,
+        }));
 
+        get().nextTurn();
+      },
+      skipGuess: () => {
+        set(() => ({
+          currentWord: null,
+          currentCategoryId: null,
+          currentDifficulty: null,
+          rerollsUsed: 0,
+        }));
+        get().nextTurn();
+      },
+    }),
     {
       name: "pantomim-game-store",
     },

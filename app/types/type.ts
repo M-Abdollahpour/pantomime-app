@@ -36,7 +36,13 @@ export type GameStore = {
   categories: Category[];
   usedWords: string[];
   pickWord: (categoryId: Id, difficulty: Difficulty) => string | null;
-  addScore: (teamId: Id, difficulty: Difficulty) => void;
   currentWord: string | null;
   setCurrentWord: (word: string | null) => void;
+  currentCategoryId: Id | null;
+  currentDifficulty: Difficulty | null;
+  rerollsUsed: number;
+  selectWord: (categoryId: Id, difficulty: Difficulty) => void;
+  rerollWord: () => void;
+  correctGuess: () => void;
+  skipGuess: () => void;
 };
