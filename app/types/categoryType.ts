@@ -5,7 +5,6 @@ export const DIFFICULTY_POINTS: Record<Difficulty, number> = {
   medium: 5,
   hard: 7,
 };
-
 export type Category = {
   id: Id;
   name: string;

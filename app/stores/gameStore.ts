@@ -134,6 +134,8 @@ export const useGameStore = create<GameStore>()(
       currentCategoryId: null,
       currentDifficulty: null,
       rerollsUsed: 0,
+      lastTurnPoints: null,
+      lastTurnTeamId: null,
       setCurrentWord: (word) => set(() => ({ currentWord: word })),
       selectWord: (categoryId, difficulty) => {
         const word = get().pickWord(categoryId, difficulty);
@@ -157,12 +159,14 @@ export const useGameStore = create<GameStore>()(
       correctGuess: () => {
         const { currentDifficulty, rerollsUsed, teams, currentTeamIndex } =
           get();
+        const teamId = teams[currentTeamIndex].id;
+        let points = 0;
+
         if (currentDifficulty) {
-          const points = Math.max(
+          points = Math.max(
             0,
             DIFFICULTY_POINTS[currentDifficulty] - rerollsUsed,
           );
-          const teamId = teams[currentTeamIndex].id;
           set((state) => ({
             teams: state.teams.map((team) =>
               team.id === teamId
@@ -171,23 +175,44 @@ export const useGameStore = create<GameStore>()(
             ),
           }));
         }
+
         set(() => ({
           currentWord: null,
           currentCategoryId: null,
           currentDifficulty: null,
           rerollsUsed: 0,
+          lastTurnPoints: points,
+          lastTurnTeamId: teamId,
         }));
 
         get().nextTurn();
       },
       skipGuess: () => {
+        const { teams, currentTeamIndex } = get();
+        const teamId = teams[currentTeamIndex].id;
         set(() => ({
           currentWord: null,
           currentCategoryId: null,
           currentDifficulty: null,
           rerollsUsed: 0,
+          lastTurnPoints: 0,
+          lastTurnTeamId: teamId,
         }));
         get().nextTurn();
+      },
+      resetGame: () => {
+        set((state) => ({
+          currentRound: 1,
+          currentTeamIndex: 0,
+          usedWords: [],
+          currentWord: null,
+          currentCategoryId: null,
+          currentDifficulty: null,
+          rerollsUsed: 0,
+          lastTurnPoints: null,
+          lastTurnTeamId: null,
+          teams: state.teams.map((team) => ({ ...team, score: 0 })),
+        }));
       },
     }),
     {

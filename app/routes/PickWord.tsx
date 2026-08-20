@@ -6,26 +6,26 @@ import { DIFFICULTY_POINTS, type Difficulty } from "~/types/categoryType";
 export default function PickWord() {
   const navigate = useNavigate();
   const categories = useGameStore((state) => state.categories);
-  const pickWord = useGameStore((state) => state.pickWord);
   const team = useGameStore((state) => state.teams);
   const currentTeamIndex = useGameStore((state) => state.currentTeamIndex);
   const currentTeam = team[currentTeamIndex];
+  const selectWord = useGameStore((state) => state.selectWord);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null,
   );
-  const difficulties: Difficulty[] = ["easy", "medium", "hard"];
   const [selectedDifficulty, setSelectedDifficulty] =
     useState<Difficulty | null>(null);
-  const setCurrentWord = useGameStore((state) => state.setCurrentWord);
-  const handleStartTimer = () => {
-    if (!selectedCategoryId || !selectedDifficulty) return;
-    const word = pickWord(selectedCategoryId, selectedDifficulty);
-    setCurrentWord(word);
-    navigate("starttimer");
-  };
+
+  const difficulties: Difficulty[] = ["easy", "medium", "hard"];
+
   const handleDifficultySelect = (difficulty: Difficulty) => {
     if (!selectedCategoryId) return;
     setSelectedDifficulty(difficulty);
+  };
+  const handleStartTimer = () => {
+    if (!selectedCategoryId || !selectedDifficulty) return;
+    selectWord(selectedCategoryId, selectedDifficulty);
+    navigate("/startgame/starttimer");
   };
 
   return (

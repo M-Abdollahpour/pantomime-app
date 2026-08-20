@@ -1,12 +1,13 @@
 import type { Category, Difficulty } from "./categoryType";
-
+export type CountDownProps = {
+  totalTime: number;
+  isRunning: boolean;
+};
 export type Id = string;
-
 export type Player = {
   id: Id;
   name: string;
 };
-
 export type Team = {
   id: Id;
   name: string;
@@ -15,12 +16,10 @@ export type Team = {
   players: Player[];
   score: number;
 };
-
 export type GameSettings = {
   timePerTurn: number;
   totalRounds: number;
 };
-
 export type GameStore = {
   teams: Team[];
   gameSettings: GameSettings;
@@ -45,4 +44,7 @@ export type GameStore = {
   rerollWord: () => void;
   correctGuess: () => void;
   skipGuess: () => void;
+  lastTurnPoints: number | null;
+  lastTurnTeamId: Id | null;
+  resetGame: () => void;
 };
