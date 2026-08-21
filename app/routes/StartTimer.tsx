@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import CloseGame from "~/components/closeGame/closeGame";
 import CountDown from "~/components/countDown";
 import { useGameStore } from "~/stores/gameStore";
 
@@ -18,7 +19,6 @@ export default function StartTimer() {
   const rerollsUsed = useGameStore((state) => state.rerollsUsed);
   const rerollWord = useGameStore((state) => state.rerollWord);
   const correctGuess = useGameStore((state) => state.correctGuess);
-  console.log(correctGuess);
   const [isWordVisible, setIsWordVisible] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const rerollsLeft = MAX_REROLLS - rerollsUsed;
@@ -29,6 +29,7 @@ export default function StartTimer() {
 
   return (
     <div className="container mx-auto p-8 text-center">
+      <CloseGame />
       <p>{currentTeam.name}</p>
       <p>{actingPlayer.name} is acting</p>
 
@@ -45,13 +46,14 @@ export default function StartTimer() {
       <div className="flex justify-center gap-4 mb-6">
         <button
           className="border bg-gray-300 px-4 py-2 rounded-lg disabled:opacity-50"
-          disabled={rerollsLeft <= 0}
+          disabled={hasStarted || rerollsLeft <= 0}
           onClick={rerollWord}
         >
           Change Word ({rerollsLeft} left)
         </button>
         <button
-          className="border bg-green-400 px-4 py-2 rounded-lg"
+          className="border bg-green-400 px-4 py-2 rounded-lg disabled:opacity-50"
+          disabled={!hasStarted}
           onClick={handleCorrectGuess}
         >
           Correct Guess

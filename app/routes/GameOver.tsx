@@ -6,6 +6,7 @@ export default function GameOver() {
   const teams = useGameStore((state) => state.teams);
   const resetGame = useGameStore((state) => state.resetGame);
   const sortedTeams = [...teams].sort((a, b) => b.score - a.score);
+  const resetAll = useGameStore((state) => state.resetAll);
   const winner = sortedTeams[0];
 
   const handlePlayAgain = () => {
@@ -13,7 +14,7 @@ export default function GameOver() {
     navigate("/startgame");
   };
   const handleGoHome = () => {
-    resetGame();
+    resetAll();
     navigate("/");
   };
 

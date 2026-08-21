@@ -1,21 +1,18 @@
 import { useGameStore } from "~/stores/gameStore";
 import type { Route } from "./+types/home";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { nanoid } from "nanoid";
 import { Link } from "react-router";
 import { capitalString } from "../utils/capitalString";
-import { Typography } from "antd";
-import { Button } from "antd";
+import { Typography, Input, Button } from "antd";
+import { Settings, Timer, UsersRound, RefreshCcw } from "lucide-react";
+import { UserOutlined } from "@ant-design/icons";
+
 const { Title } = Typography;
 
-import {
-  Avatar,
-  AvatarBadge,
-  AvatarFallback,
-  AvatarImage,
-} from "../components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 export function meta({}: Route.MetaArgs) {
   return [{ title: "Pantomime" }];
 }
@@ -39,7 +36,7 @@ export default function Home() {
     })
     .required();
   const {
-    register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
@@ -61,22 +58,26 @@ export default function Home() {
     reset();
   };
   return (
-    <div className="bg-blue-50">
+    <div className="bg-[#E2E8F0]">
       <div className="container mx-auto p-8 text-center ">
         <div className="flex flex-col gap-4 justify-center items-center">
           <Title className="w-full">PANTOMIME</Title>
           <span className="flex justify-center items-center">
-            <span className="border w-36 border-red-700"></span>
-            <span className="border w-36 border-blue-700"></span>
+            <span className="border w-screen border-red-700"></span>
+            <span className="border w-screen border-blue-700"></span>
           </span>
           <p className="bg-black text-white px-6 py-1 rounded-lg rotate-x-5 -rotate-y-15">
             Great Challenge
           </p>
-          <ul className="flex gap-5 flex-col `w-75`">
+          <ul className="flex gap-5 flex-col w-svh">
+            <div className="flex gap-2">
+              <UsersRound />
+              <span>Teams</span>
+            </div>
             {teams.map((item) => (
               <li
                 key={item.id}
-                className="border p-5 rounded-lg flex gap-2 flex-col items-center justify-center"
+                className="border p-2 bg-[#F8FAFC] rounded-lg flex gap-2 flex-col items-center justify-center"
               >
                 <div className="flex w-full gap-2 border-b py-2">
                   <Avatar>
@@ -86,8 +87,12 @@ export default function Home() {
                     />
                     <AvatarFallback>PP</AvatarFallback>
                   </Avatar>
-
-                  <input
+                  <Input
+                    prefix={
+                      <UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />
+                    }
+                    maxLength={10}
+                    showCount
                     className="border rounded-lg px-2 py-1"
                     type="text"
                     defaultValue={item.name}
@@ -118,7 +123,9 @@ export default function Home() {
                       icon="-"
                       shape="circle"
                     />
-                    {item.playerCount}
+                    <span className="inline-block w-4 text-center">
+                      {item.playerCount}
+                    </span>
                     <Button
                       onClick={() =>
                         updateTeamPlayerCount(item.id, item.playerCount + 1)
@@ -131,50 +138,78 @@ export default function Home() {
                   </span>
                 </div>
                 <div className="w-full">
-                  <p className="mb-2">Named Members</p>
-
+                  <p className="text-start mb-2">Named Members</p>
                   <div className="flex flex-col gap-2">
                     {item.players.map((player) => (
-                      <input
-                        key={player.id}
-                        className="border rounded-lg px-2 py-1"
-                        defaultValue={player.name}
-                        onBlur={(event) =>
-                          updatePlayerName(
-                            item.id,
-                            player.id,
-                            capitalString(event.target.value),
-                          )
-                        }
-                      />
+                      <>
+                        <Input
+                          prefix={
+                            <UserOutlined
+                              style={{ color: "rgba(0,0,0,.25)" }}
+                            />
+                          }
+                          maxLength={10}
+                          showCount
+                          placeholder="Name"
+                          key={player.id}
+                          className="border rounded-lg px-2 py-1"
+                          defaultValue={player.name}
+                          onBlur={(event) =>
+                            updatePlayerName(
+                              item.id,
+                              player.id,
+                              capitalString(event.target.value),
+                            )
+                          }
+                        />
+                      </>
                     ))}
                   </div>
                 </div>
               </li>
             ))}
           </ul>
-          <form className="border-b pb-5" onSubmit={handleSubmit(onSubmit)}>
-            <input
-              {...register("name")}
-              className="border rounded-lg px-2 py-1"
-              placeholder="Team Name"
-            />
-
-            <button
-              disabled={teams.length >= 6}
-              className="border rounded-lg px-2 py-1"
-              type="submit"
-            >
-              Add team
-            </button>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="flex gap-4 w-svh border rounded-lg p-2 bg-[#F8FAFC]">
+              <Controller
+                name="name"
+                control={control}
+                render={({ field }) => (
+                  <Input
+                    prefix={
+                      <UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />
+                    }
+                    maxLength={10}
+                    showCount
+                    {...field}
+                    className="border rounded-lg px-2 py-1"
+                    placeholder="Team Name"
+                  />
+                )}
+              />
+              <Button
+                htmlType="submit"
+                disabled={teams.length >= 6}
+                className="border rounded-lg px-2 py-1"
+                type="primary"
+              >
+                Add Team
+              </Button>
+            </div>
             <div>
-              <small>{errors.name?.message}</small>
+              <small className="text-red-600">{errors.name?.message}</small>
             </div>
           </form>
-          <div className="`w-75` border rounded-lg p-5">
-            <h1>Game Settings</h1>
-            <div className="flex justify-between border-b">
-              <span>Rounds</span>
+          <div className="flex gap-2 py-2 w-svh ">
+            <Settings />
+            <span>Game Settings</span>
+          </div>
+          <div className="border rounded-lg p-5 w-svh bg-[#F8FAFC]">
+            <div className="flex justify-between items-center border-b py-2">
+              <span className="flex justify-center items-center gap-2">
+                <RefreshCcw />
+                Rounds
+              </span>
               <span className="flex justify-center items-center gap-4">
                 <Button
                   shape="circle"
@@ -188,7 +223,9 @@ export default function Home() {
                     })
                   }
                 />
-                <span>{gameSetting.totalRounds}</span>
+                <span className="inline-block w-6 text-center">
+                  {gameSetting.totalRounds}
+                </span>
                 <Button
                   shape="circle"
                   type="primary"
@@ -203,8 +240,11 @@ export default function Home() {
                 />
               </span>
             </div>
-            <div className="flex justify-between">
-              <span>Time per turn</span>
+            <div className="flex justify-between items-center py-2">
+              <span className="flex gap-2 justify-center items-center">
+                <Timer />
+                Time per turn
+              </span>
               <span className="flex justify-center items-center gap-2">
                 <Button
                   shape="circle"
@@ -218,7 +258,9 @@ export default function Home() {
                     })
                   }
                 />
-                <span className="grow-0">{gameSetting.timePerTurn}s</span>
+                <span className="inline-block w-10 text-center">
+                  {gameSetting.timePerTurn}s
+                </span>
                 <Button
                   shape="circle"
                   type="primary"
@@ -236,9 +278,12 @@ export default function Home() {
           </div>
           <div>
             <Link to={`/startgame`}>
-              <button className="border rounded-lg px-4 py-2">
+              <Button
+                type="primary"
+                className="border rounded-lg px-4 py-2 w-svh"
+              >
                 START GAME
-              </button>
+              </Button>
             </Link>
           </div>
         </div>

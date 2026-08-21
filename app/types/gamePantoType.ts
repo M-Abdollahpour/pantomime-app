@@ -47,4 +47,5 @@ export type GameStore = {
   lastTurnPoints: number | null;
   lastTurnTeamId: Id | null;
   resetGame: () => void;
+  resetAll: () => void;
 };

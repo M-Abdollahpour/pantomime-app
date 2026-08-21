@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid";
 import { create } from "zustand";
-import type { GameStore } from "~/types/type";
+import type { GameStore } from "~/types/gamePantoType";
 import { persist } from "zustand/middleware";
 import { CATEGORIES } from "../data/categories";
 import { DIFFICULTY_POINTS } from "~/types/categoryType";
@@ -136,6 +136,7 @@ export const useGameStore = create<GameStore>()(
       rerollsUsed: 0,
       lastTurnPoints: null,
       lastTurnTeamId: null,
+
       setCurrentWord: (word) => set(() => ({ currentWord: word })),
       selectWord: (categoryId, difficulty) => {
         const word = get().pickWord(categoryId, difficulty);
@@ -212,6 +213,39 @@ export const useGameStore = create<GameStore>()(
           lastTurnPoints: null,
           lastTurnTeamId: null,
           teams: state.teams.map((team) => ({ ...team, score: 0 })),
+        }));
+      },
+      resetAll: () => {
+        get().resetGame();
+        set(() => ({
+          gameSettings: {
+            timePerTurn: 60,
+            totalRounds: 3,
+          },
+          teams: [
+            {
+              id: nanoid(),
+              name: "Team 1",
+              avatarId: 1,
+              playerCount: 2,
+              score: 0,
+              players: [
+                { id: nanoid(), name: "Player 1" },
+                { id: nanoid(), name: "Player 2" },
+              ],
+            },
+            {
+              id: nanoid(),
+              name: "Team 2",
+              avatarId: 2,
+              playerCount: 2,
+              score: 0,
+              players: [
+                { id: nanoid(), name: "Player 1" },
+                { id: nanoid(), name: "Player 2" },
+              ],
+            },
+          ],
         }));
       },
     }),

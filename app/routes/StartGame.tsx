@@ -1,4 +1,5 @@
 import { Link } from "react-router";
+import CloseGame from "~/components/closeGame/closeGame";
 import { useGameStore } from "~/stores/gameStore";
 
 export default function StartGame() {
@@ -10,6 +11,7 @@ export default function StartGame() {
 
   return (
     <div className="container mx-auto p-8 text-center ">
+      <CloseGame />
       <ul className=" flex justify-center gap-5 items-center text-center">
         {team.map((item, index) => (
           <li key={item.id} className="flex items-center gap-5">

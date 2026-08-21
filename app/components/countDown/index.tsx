@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { CountDownProps } from "~/types/type";
+import type { CountDownProps } from "~/types/gamePantoType";
 
 export default function CountDown({ totalTime, isRunning }: CountDownProps) {
   const totalSeconds = totalTime;

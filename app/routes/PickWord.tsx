@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import CloseGame from "~/components/closeGame/closeGame";
 import { useGameStore } from "~/stores/gameStore";
 import { DIFFICULTY_POINTS, type Difficulty } from "~/types/categoryType";
 
@@ -30,6 +31,7 @@ export default function PickWord() {
 
   return (
     <div className="container mx-auto p-8">
+      <CloseGame />
       <h1 className="text-center">Word Selection For {currentTeam.name}</h1>
 
       <h3>Categories</h3>

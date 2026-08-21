@@ -1,4 +1,4 @@
-import type { Id } from "./type";
+import type { Id } from "./gamePantoType";
 
 export type Avatar = {
   id: Id;
