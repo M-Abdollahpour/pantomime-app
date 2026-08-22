@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import CloseGame from "~/components/closeGame/closeGame";
+import CloseGame from "~/components/closeGame";
 import { useGameStore } from "~/stores/gameStore";
 
 export default function StartGame() {

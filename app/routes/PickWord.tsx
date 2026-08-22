@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import CloseGame from "~/components/closeGame/closeGame";
+import CloseGame from "~/components/closeGame";
 import { useGameStore } from "~/stores/gameStore";
 import { DIFFICULTY_POINTS, type Difficulty } from "~/types/categoryType";
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import CloseGame from "~/components/closeGame/closeGame";
+import CloseGame from "~/components/closeGame";
 import CountDown from "~/components/countDown";
 import { useGameStore } from "~/stores/gameStore";
 
