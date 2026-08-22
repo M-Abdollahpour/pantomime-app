@@ -6,8 +6,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { nanoid } from "nanoid";
 import { Link } from "react-router";
 import { capitalString } from "../utils/capitalString";
-import { Typography, Button } from "antd";
-import { Settings, Timer, RefreshCcw } from "lucide-react";
+import { Typography, Button, BorderBeam, Card } from "antd";
+import { Settings, Timer, RefreshCcw, Cog } from "lucide-react";
 
 const { Title } = Typography;
 
@@ -15,6 +15,7 @@ import GameSetting from "~/components/gameSetting";
 import FormAddTeam from "~/components/form";
 import TeamItem from "~/components/teams";
 import type { TeamFormValues } from "~/types/gamePantoType";
+import Setting from "./Setting";
 
 export default function MainMenu() {
   const teams = useGameStore((state) => state.teams);
@@ -57,11 +58,18 @@ export default function MainMenu() {
   return (
     <div className="min-h-screen bg-[#E2E8F0]">
       <div className="container mx-auto max-w-3xl px-4 py-6 text-center sm:px-6 sm:py-8">
+        <Setting />
         <div className="flex flex-col items-center gap-4 sm:gap-5">
-          <Title className="w-full">PANTOMIME</Title>
+          <div className="w-full max-w-xl">
+            <BorderBeam>
+              <Card title="PANTOMIME"></Card>
+            </BorderBeam>
+          </div>
           <span className="flex w-full max-w-xl items-center justify-center">
             <span className="flex-1 border border-red-700" />
             <span className="flex-1 border border-blue-700" />
+            <span className="flex-1 border border-amber-500" />
+            <span className="flex-1 border border-green-500" />
           </span>
           <p className="bg-black text-white px-6 py-1 rounded-lg rotate-x-5 -rotate-y-15">
             Great Challenge

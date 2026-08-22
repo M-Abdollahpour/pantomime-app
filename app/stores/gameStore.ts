@@ -248,6 +248,15 @@ export const useGameStore = create<GameStore>()(
           ],
         }));
       },
+      soundSettings: {
+        soundEffects: true,
+        partyMusic: true,
+      },
+      setSoundSettings: (settings) => {
+        set(() => ({
+          soundSettings: settings,
+        }));
+      },
     }),
     {
       name: "pantomim-game-store",

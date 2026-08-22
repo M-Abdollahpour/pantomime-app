@@ -49,6 +49,10 @@ export type GameSettings = {
   timePerTurn: number;
   totalRounds: number;
 };
+export type SoundSettings = {
+  soundEffects: boolean;
+  partyMusic: boolean;
+};
 export type GameStore = {
   teams: Team[];
   gameSettings: GameSettings;
@@ -75,6 +79,8 @@ export type GameStore = {
   skipGuess: () => void;
   lastTurnPoints: number | null;
   lastTurnTeamId: Id | null;
+  soundSettings: SoundSettings;
+  setSoundSettings: (settings: SoundSettings) => void;
   resetGame: () => void;
   resetAll: () => void;
 };

@@ -1,9 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { CountDownProps } from "~/types/gamePantoType";
+import { useGameStore } from "~/stores/gameStore";
+import { playSound } from "~/utils/playSound";
 
 export default function CountDown({ totalTime, isRunning }: CountDownProps) {
+  const soundSettings = useGameStore((state) => state.soundSettings);
   const totalSeconds = totalTime;
   const [remainingSeconds, setRemainingSeconds] = useState(totalTime);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
   const dashOffset = 100 - (remainingSeconds / totalSeconds) * 100;
   const percentage = (remainingSeconds / totalSeconds) * 100;
   let strokeColor = "#22c55e";
@@ -12,13 +17,23 @@ export default function CountDown({ totalTime, isRunning }: CountDownProps) {
   } else if (percentage <= 50) {
     strokeColor = "#f97316";
   }
+
   useEffect(() => {
     if (!isRunning) return;
+
     const intervalId = setInterval(() => {
+      if (soundSettings.soundEffects) {
+        audioRef.current?.pause();
+        audioRef.current = playSound("/sounds/tick.wav");
+      }
       setRemainingSeconds((prev) => Math.max(prev - 1, 0));
     }, 1000);
-    return () => clearInterval(intervalId);
-  }, [isRunning]);
+
+    return () => {
+      clearInterval(intervalId);
+      audioRef.current?.pause();
+    };
+  }, [isRunning, soundSettings.soundEffects]);
 
   return (
     <svg width="160" height="160" viewBox="0 0 160 160">

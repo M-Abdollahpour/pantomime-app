@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import CloseGame from "~/components/closeGame";
 import CountDown from "~/components/countDown";
 import { useGameStore } from "~/stores/gameStore";
-
+import { playSound } from "~/utils/playSound";
 const MAX_REROLLS = 3;
 
 export default function StartTimer() {
@@ -19,10 +19,14 @@ export default function StartTimer() {
   const rerollsUsed = useGameStore((state) => state.rerollsUsed);
   const rerollWord = useGameStore((state) => state.rerollWord);
   const correctGuess = useGameStore((state) => state.correctGuess);
+  const soundSettings = useGameStore((state) => state.soundSettings);
   const [isWordVisible, setIsWordVisible] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const rerollsLeft = MAX_REROLLS - rerollsUsed;
   const handleCorrectGuess = () => {
+    if (soundSettings.soundEffects) {
+      playSound("/sounds/correct.wav");
+    }
     correctGuess();
     navigate("/startgame/turnteam");
   };
