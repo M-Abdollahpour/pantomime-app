@@ -1,21 +1,17 @@
 import { useGameStore } from "~/stores/gameStore";
-
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { nanoid } from "nanoid";
 import { Link } from "react-router";
+import { Button, BorderBeam, Card } from "antd";
+import { Settings, Timer, RefreshCcw, UserRoundPlus } from "lucide-react";
 import { capitalString } from "../utils/capitalString";
-import { Typography, Button, BorderBeam, Card } from "antd";
-import { Settings, Timer, RefreshCcw, Cog } from "lucide-react";
-
-const { Title } = Typography;
-
 import GameSetting from "~/components/gameSetting";
 import FormAddTeam from "~/components/form";
 import TeamItem from "~/components/teams";
+import Setting from "../components/setting";
 import type { TeamFormValues } from "~/types/gamePantoType";
-import Setting from "./Setting";
 
 export default function MainMenu() {
   const teams = useGameStore((state) => state.teams);
@@ -28,11 +24,9 @@ export default function MainMenu() {
   const gameSetting = useGameStore((state) => state.gameSettings);
   const setGameSettings = useGameStore((state) => state.setGameSettings);
   const removeTeams = useGameStore((state) => state.removeTeam);
-  const schema: yup.ObjectSchema<TeamFormValues> = yup
-    .object({
-      name: yup.string().required("Name team is required").min(3),
-    })
-    .required();
+  const schema: yup.ObjectSchema<TeamFormValues> = yup.object({
+    name: yup.string().required("Name team is required").min(3),
+  });
   const {
     control,
     handleSubmit,
@@ -62,7 +56,9 @@ export default function MainMenu() {
         <div className="flex flex-col items-center gap-4 sm:gap-5">
           <div className="w-full max-w-xl">
             <BorderBeam>
-              <Card title="PANTOMIME"></Card>
+              <Card
+                title={<h1 className="font-bold text-2xl">PANTOMIME</h1>}
+              ></Card>
             </BorderBeam>
           </div>
           <span className="flex w-full max-w-xl items-center justify-center">
@@ -82,43 +78,51 @@ export default function MainMenu() {
             onUpdatePlayerName={updatePlayerName}
             onRemoveTeam={removeTeams}
           />
+          <div className="w-full max-w-xl flex items-center gap-2">
+            <span>
+              <UserRoundPlus />
+            </span>
+            <p>Add Team</p>
+          </div>
           <FormAddTeam
             onSubmit={handleSubmit(onSubmit)}
             control={control}
             errors={errors}
             isMaxTeamsReached={teams.length >= 6}
           />
-          <div className="flex w-full max-w-xl gap-2 py-2">
+          <div className="flex w-full max-w-xl gap-2">
             <Settings />
             <span>Game Settings</span>
           </div>
           <div className="w-full max-w-xl rounded-lg border bg-[#F8FAFC] p-3 sm:p-5">
-            <GameSetting
-              title="Rounds"
-              icon={<RefreshCcw />}
-              value={gameSetting.totalRounds}
-              min={1}
-              max={10}
-              step={1}
-              onChange={(newValue) =>
-                setGameSettings({ ...gameSetting, totalRounds: newValue })
-              }
-            />
-            <span className="flex w-full max-w-xl items-center justify-center">
-              <span className="flex-1 h-px bg-gray-200" />
-            </span>
-            <GameSetting
-              title="Time per turn"
-              icon={<Timer />}
-              value={gameSetting.timePerTurn}
-              min={30}
-              max={90}
-              step={30}
-              unit="s"
-              onChange={(newValue) =>
-                setGameSettings({ ...gameSetting, timePerTurn: newValue })
-              }
-            />
+            <Card>
+              <GameSetting
+                title="Rounds"
+                icon={<RefreshCcw />}
+                value={gameSetting.totalRounds}
+                min={1}
+                max={10}
+                step={1}
+                onChange={(newValue) =>
+                  setGameSettings({ ...gameSetting, totalRounds: newValue })
+                }
+              />
+              <span className="flex w-full max-w-xl items-center justify-center">
+                <span className="flex-1 h-px bg-gray-200" />
+              </span>
+              <GameSetting
+                title="Time per turn"
+                icon={<Timer />}
+                value={gameSetting.timePerTurn}
+                min={30}
+                max={90}
+                step={30}
+                unit="s"
+                onChange={(newValue) =>
+                  setGameSettings({ ...gameSetting, timePerTurn: newValue })
+                }
+              />
+            </Card>
           </div>
           <div className="w-full max-w-xl">
             <Link to="/startgame" className="block w-full">

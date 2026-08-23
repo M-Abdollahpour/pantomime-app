@@ -63,10 +63,15 @@ export default function CountDown({ totalTime, isRunning }: CountDownProps) {
         y="80"
         textAnchor="middle"
         dominantBaseline="middle"
-        fontSize="32"
-        fill="#111827"
+        fontSize="42"
+        fill={strokeColor}
       >
-        {remainingSeconds}s
+        <tspan x="80" dy="-8">
+          {remainingSeconds}
+        </tspan>
+        <tspan x="80" dy="24" fontSize="10">
+          sec
+        </tspan>
       </text>
     </svg>
   );

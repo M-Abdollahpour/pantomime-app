@@ -1,5 +1,7 @@
 import { Input, Button } from "antd";
 import { UsersRound } from "lucide-react";
+import { GiAmericanFootballPlayer } from "react-icons/gi";
+import { MdOutlineDriveFileRenameOutline } from "react-icons/md";
 import {
   UserOutlined,
   MinusOutlined,
@@ -58,7 +60,10 @@ const TeamItem = ({
           </div>
 
           <div className="border-b py-2 flex w-full justify-between">
-            <span>players</span>
+            <span className="flex gap-2 items-center">
+              <GiAmericanFootballPlayer />
+              players
+            </span>
             <span className="flex items-center gap-4">
               <Button
                 onClick={() =>
@@ -85,7 +90,10 @@ const TeamItem = ({
           </div>
 
           <div className="w-full">
-            <p className="text-start mb-2">Named Members</p>
+            <p className="flex items-center gap-2 py-2">
+              <MdOutlineDriveFileRenameOutline />
+              Named Members
+            </p>
             <div className="flex flex-col gap-2">
               {item.players.map((player) => (
                 <Input

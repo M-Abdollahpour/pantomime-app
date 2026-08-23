@@ -3,7 +3,10 @@ import { create } from "zustand";
 import type { GameStore } from "~/types/gamePantoType";
 import { persist } from "zustand/middleware";
 import { CATEGORIES } from "../data/categories";
-import { DIFFICULTY_POINTS } from "~/types/categoryType";
+import {
+  DIFFICULTY_POINTS,
+  MAX_REROLLS_BY_DIFFICULTY,
+} from "~/types/categoryType";
 
 export const useGameStore = create<GameStore>()(
   persist(
@@ -150,7 +153,8 @@ export const useGameStore = create<GameStore>()(
       rerollWord: () => {
         const { currentCategoryId, currentDifficulty, rerollsUsed } = get();
         if (!currentCategoryId || !currentDifficulty) return;
-        if (rerollsUsed >= 3) return;
+        const maxRerolls = MAX_REROLLS_BY_DIFFICULTY[currentDifficulty];
+        if (rerollsUsed >= maxRerolls) return;
         const word = get().pickWord(currentCategoryId, currentDifficulty);
         set((state) => ({
           currentWord: word,

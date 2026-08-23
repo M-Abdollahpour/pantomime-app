@@ -2,6 +2,7 @@ import { Cog, Volume2 } from "lucide-react";
 import { useState } from "react";
 import { Button, Modal, Switch } from "antd";
 import { useGameStore } from "~/stores/gameStore";
+import { GiPlayerTime } from "react-icons/gi";
 
 export default function Setting() {
   const soundSettings = useGameStore((state) => state.soundSettings);
@@ -13,9 +14,8 @@ export default function Setting() {
   const handleOk = () => {
     setIsModalOpen(false);
   };
-
   return (
-    <div className="container mx-auto max-w-3xl px-4 py-6 text-center sm:px-6 sm:py-8">
+    <div className="max-w-3xl px-4 py-6 fixed right-100 top-0 sm:px-6 sm:py-8">
       <div className="flex justify-end items-center">
         <div className="bg-[#E2E8F0]">
           <Button type="primary" onClick={showModal}>
@@ -33,7 +33,6 @@ export default function Setting() {
                 Done
               </Button>
             </div>
-
             <span className="flex w-full max-w-xl items-center justify-center">
               <span className="flex-1 h-px bg-gray-200" />
             </span>

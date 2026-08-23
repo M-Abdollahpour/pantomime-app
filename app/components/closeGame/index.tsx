@@ -19,23 +19,25 @@ export default function CloseGame() {
     setIsModalOpen(false);
   };
   return (
-    <div>
-      <Button type="primary" onClick={showModal}>
-        X
-      </Button>
-      <Modal
-        okType="danger"
-        closable={false}
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        okText={"Yes, Exit"}
-        cancelText={"No, Continue"}
-      >
-        <p className="font-bold">Cancel the game?</p>
-        <p>All rounds and scores will be lost.</p>
-        <p>You'll need to set up a new game</p>
-      </Modal>
+    <div className="relative">
+      <div className="absolute -left-84 top-0">
+        <Button type="primary" danger ghost shape="circle" onClick={showModal}>
+          X
+        </Button>
+        <Modal
+          okType="danger"
+          closable={false}
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          okText={"Yes, Exit"}
+          cancelText={"No, Continue"}
+        >
+          <p className="font-bold">Cancel the game?</p>
+          <p>All rounds and scores will be lost.</p>
+          <p>You'll need to set up a new game</p>
+        </Modal>
+      </div>
     </div>
   );
 }

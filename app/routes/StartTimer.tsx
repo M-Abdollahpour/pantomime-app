@@ -4,6 +4,21 @@ import CloseGame from "~/components/closeGame";
 import CountDown from "~/components/countDown";
 import { useGameStore } from "~/stores/gameStore";
 import { playSound } from "~/utils/playSound";
+import { RiTeamLine } from "react-icons/ri";
+import { GiPlayerTime } from "react-icons/gi";
+import { Button, Card } from "antd";
+import {
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+  StarOutlined,
+  FieldTimeOutlined,
+  CheckCircleFilled,
+  RetweetOutlined,
+} from "@ant-design/icons";
+import {
+  DIFFICULTY_POINTS,
+  MAX_REROLLS_BY_DIFFICULTY,
+} from "~/types/categoryType";
 const MAX_REROLLS = 3;
 
 export default function StartTimer() {
@@ -16,15 +31,25 @@ export default function StartTimer() {
   const playerIndex = (currentRound - 1) % currentTeam.players.length;
   const actingPlayer = currentTeam.players[playerIndex];
   const currentWord = useGameStore((state) => state.currentWord);
-  const rerollsUsed = useGameStore((state) => state.rerollsUsed);
   const rerollWord = useGameStore((state) => state.rerollWord);
   const correctGuess = useGameStore((state) => state.correctGuess);
   const soundSettings = useGameStore((state) => state.soundSettings);
+  const categories = useGameStore((state) => state.categories);
+  const currentCategoryId = useGameStore((state) => state.currentCategoryId);
+  const currentCategory = categories.find((c) => c.id === currentCategoryId);
+  const currentDifficulty = useGameStore((state) => state.currentDifficulty);
+  const rerollsUsed = useGameStore((state) => state.rerollsUsed);
   const [isWordVisible, setIsWordVisible] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
-  const rerollsLeft = MAX_REROLLS - rerollsUsed;
+  const maxRerolls = currentDifficulty
+    ? MAX_REROLLS_BY_DIFFICULTY[currentDifficulty]
+    : 0;
+  const rerollsLeft = maxRerolls - rerollsUsed;
+  const currentPoints = currentDifficulty
+    ? Math.max(0, DIFFICULTY_POINTS[currentDifficulty] - rerollsUsed)
+    : 0;
   const handleCorrectGuess = () => {
-    if (soundSettings.soundEffects) {
+    if (soundSettings.partyMusic) {
       playSound("/sounds/correct.wav");
     }
     correctGuess();
@@ -32,41 +57,92 @@ export default function StartTimer() {
   };
 
   return (
-    <div className="container mx-auto p-8 text-center">
-      <CloseGame />
-      <p>{currentTeam.name}</p>
-      <p>{actingPlayer.name} is acting</p>
-
-      <CountDown totalTime={gameSetting.timePerTurn} isRunning={hasStarted} />
-      <div className="my-6">
-        <div
-          className="border rounded-lg p-6 text-2xl font-bold cursor-pointer select-none"
-          onClick={() => setIsWordVisible((prev) => !prev)}
-        >
-          {isWordVisible ? currentWord : "Tap to reveal"}
+    <div className="min-h-screen bg-[#E2E8F0]">
+      <div className="container mx-auto max-w-3xl px-4 py-6 text-center sm:px-6 sm:py-8">
+        <div className="flex flex-col items-center gap-4 sm:gap-5 bg-[#F8FAFC] rounded-lg py-5">
+          <CloseGame />
+          <div className="w-full max-w-xl bg-white p-5 rounded-lg">
+            <Card>
+              <h1 className="font-bold text-2xl flex justify-center items-center gap-2 border-b py-4">
+                <RiTeamLine />
+                {currentTeam.name}
+              </h1>
+              <p className="flex text-lg justify-center gap-2 items-center border-b py-4">
+                <GiPlayerTime />
+                <span className="font-bold">{actingPlayer.name}</span> is acting
+              </p>
+              <p className="py-5 flex items-center justify-center gap-2">
+                Word value:
+                <span className="bg-amber-500 px-4 py-1 rounded-2xl text-white flex gap-2">
+                  <StarOutlined />
+                  {currentPoints}
+                </span>
+              </p>
+              <div className="flex items-center justify-center py-5">
+                <CountDown
+                  totalTime={gameSetting.timePerTurn}
+                  isRunning={hasStarted}
+                />
+              </div>
+            </Card>
+            <div>
+              <div
+                className={`border relative h-30 w-full max-w-xl rounded-lg p-6 cursor-pointer select-none my-5 flex justify-center items-center ${isWordVisible ? "bg-white" : "bg-blue-500"}`}
+                onClick={() => setIsWordVisible((prev) => !prev)}
+              >
+                {isWordVisible ? (
+                  <div className="w-full max-w-xl">
+                    <small className="absolute right-1 top-1 flex gap-2 items-center">
+                      <EyeTwoTone />
+                      tap again to hide
+                    </small>
+                    <p className="text-4xl font-bold py-2">{currentWord}</p>
+                    <p className="text-sm text-white rounded-lg bg-purple-400 py-1">
+                      {currentCategory?.name}
+                    </p>
+                  </div>
+                ) : (
+                  <div className="flex flex-col justify-center items-center text-white">
+                    <EyeInvisibleOutlined className="text-4xl" />
+                    <p className="font-bold">TAP TO SEE WORD</p>
+                    <small>Memorise, then hide before acting</small>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex justify-center gap-4 py-5">
+              <Button
+                className="border px-4 py-2 rounded-lg disabled:opacity-50 w-full max-w-xl"
+                danger
+                disabled={hasStarted || rerollsLeft <= 0}
+                onClick={rerollWord}
+              >
+                <RetweetOutlined />
+                Change Word ({rerollsLeft} left)
+              </Button>
+              <Button
+                type="primary"
+                className="bg-green-500 hover:bg-green-600! text-white px-4 py-2 rounded-lg disabled:opacity-50 w-full max-w-xl"
+                disabled={!hasStarted}
+                onClick={handleCorrectGuess}
+              >
+                <CheckCircleFilled />
+                Correct Guess
+              </Button>
+            </div>
+          </div>
+          <div className="w-full max-w-xl">
+            <Button
+              className="w-full rounded-lg px-4 py-2"
+              type="primary"
+              onClick={() => setHasStarted(true)}
+              disabled={hasStarted}
+            >
+              <FieldTimeOutlined />
+              Start Timer
+            </Button>
+          </div>
         </div>
-      </div>
-
-      <div className="flex justify-center gap-4 mb-6">
-        <button
-          className="border bg-gray-300 px-4 py-2 rounded-lg disabled:opacity-50"
-          disabled={hasStarted || rerollsLeft <= 0}
-          onClick={rerollWord}
-        >
-          Change Word ({rerollsLeft} left)
-        </button>
-        <button
-          className="border bg-green-400 px-4 py-2 rounded-lg disabled:opacity-50"
-          disabled={!hasStarted}
-          onClick={handleCorrectGuess}
-        >
-          Correct Guess
-        </button>
-      </div>
-      <div>
-        {!hasStarted && (
-          <button onClick={() => setHasStarted(true)}>Start Timer</button>
-        )}
       </div>
     </div>
   );

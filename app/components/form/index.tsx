@@ -1,7 +1,8 @@
 import { Button, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { Controller, type Control, type FieldErrors } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import type { FormAddTeamProps } from "~/types/gamePantoType";
+import { TriangleAlert } from "lucide-react";
 
 const FormAddTeam = ({
   onSubmit,
@@ -35,8 +36,11 @@ const FormAddTeam = ({
           Add Team
         </Button>
       </div>
-      <div>
-        <small className="text-red-600">{errors.name?.message}</small>
+      <div className="relative">
+        <small className="text-red-600 absolute left-0 top-0 flex items-center gap-2">
+          {errors.name?.message && <TriangleAlert />}
+          {errors.name?.message}
+        </small>
       </div>
     </form>
   );
