@@ -2,8 +2,8 @@ import { Link } from "react-router";
 import CloseGame from "~/components/closeGame";
 import { useGameStore } from "~/stores/gameStore";
 import { Card, BorderBeam, Button } from "antd";
-import { PersonStanding } from "lucide-react";
 import { useMemo } from "react";
+import { FaPeoplePulling, FaPeopleLine } from "react-icons/fa6";
 
 export default function StartGame() {
   const gameSetting = useGameStore((state) => state.gameSettings);
@@ -34,22 +34,17 @@ export default function StartGame() {
                     currentTeamIndex;
                   const cardContent = (
                     <Card
-                      className="w-32 sm:w-36"
+                      className="w-46 sm:w-46"
                       style={{
                         backgroundColor: isCurrentTeam ? "#E2E8F0" : "#ffffff",
                         color: isCurrentTeam ? "#78350F" : "#000",
                       }}
                     >
-                      <div className="flex flex-col items-center justify-center p-5 rounded-lg">
-                        <h3
-                          className="font-bold w-full truncate"
-                          title={item.name}
-                        >
+                      <div className="flex flex-col text-lg items-center justify-center p-5 rounded-lg">
+                        <h3 className="font-bold  w-full" title={item.name}>
                           {item.name}
                         </h3>
-                        <span className="whitespace-nowrap">
-                          Score: {item.score}
-                        </span>
+                        <span>Score: {item.score}</span>
                       </div>
                     </Card>
                   );
@@ -72,32 +67,45 @@ export default function StartGame() {
           <div className="w-full max-w-xl">
             <Card>
               <div className="flex justify-center items-center text-center p-5">
-                <span className="flex gap-2 items-center justify-center">
+                <span className="flex gap-2 items-center justify-center text-xl bg-gray-100 px-6 py-2 rounded-lg">
                   <span>Round</span>
-                  <h3 className="font-bold">{currentRound}</h3>
+                  <h3 className="font-bold text-2xl bg-gray-200 text-pink-500 rounded-lg px-2 py-1">
+                    {currentRound}
+                  </h3>
                   <span>of</span>
-                  <h3 className="font-bold">{gameSetting.totalRounds}</h3>
+                  <h3 className="font-bold text-2xl bg-gray-200 text-pink-800 rounded-lg px-2 py-1">
+                    {gameSetting.totalRounds}
+                  </h3>
                 </span>
               </div>
-              <div className="flex justify-center items-center text-center p-5 flex-col">
-                <h3 className="font-bold flex items-center justify-center">
-                  <PersonStanding />
+              <div className="flex justify-center items-center text-center p-5 flex-col bg-gray-100 rounded-lg">
+                <h3 className="font-bold flex gap-2 items-center justify-center text-4xl">
+                  <FaPeopleLine />
+
                   {currentTeam.name}
                 </h3>
-                <span className="p-2 flex gap-2">
-                  <h3 className="font-bold">{actingPlayer.name},</h3> Get Ready
-                  to Act!
+                <span className="p-2 flex gap-2 items-center justify-center">
+                  <h3 className="font-bold text-xl flex gap-2 items-center">
+                    <FaPeoplePulling />
+                    {actingPlayer.name},
+                  </h3>
+                  Get Ready to Act!
                 </span>
               </div>
             </Card>
           </div>
-          <div className="w-full max-w-xl">
+        </div>
+        <div className="w-full max-w-3xl">
+          <Card>
             <Link to={"pickword"} className="block w-full">
-              <Button type="primary" className="w-full rounded-lg px-4 py-2">
+              <Button
+                type="primary"
+                className="w-full rounded-lg text-xl! py-5!"
+              >
                 PICK A WORD
               </Button>
             </Link>
-          </div>
+          </Card>
         </div>
       </div>
     </div>

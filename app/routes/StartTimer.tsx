@@ -4,22 +4,19 @@ import CloseGame from "~/components/closeGame";
 import CountDown from "~/components/countDown";
 import { useGameStore } from "~/stores/gameStore";
 import { playSound } from "~/utils/playSound";
-import { RiTeamLine } from "react-icons/ri";
 import { GiPlayerTime } from "react-icons/gi";
 import { Button, Card } from "antd";
+import { EyeTwoTone, StarOutlined, FieldTimeOutlined } from "@ant-design/icons";
 import {
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-  StarOutlined,
-  FieldTimeOutlined,
-  CheckCircleFilled,
-  RetweetOutlined,
-} from "@ant-design/icons";
+  EyeIcon,
+  UsersRoundIcon,
+  CoinsIcon,
+  CheckIcon,
+} from "@animateicons/react/lucide";
 import {
   DIFFICULTY_POINTS,
   MAX_REROLLS_BY_DIFFICULTY,
 } from "~/types/categoryType";
-const MAX_REROLLS = 3;
 
 export default function StartTimer() {
   const navigate = useNavigate();
@@ -35,6 +32,7 @@ export default function StartTimer() {
   const correctGuess = useGameStore((state) => state.correctGuess);
   const soundSettings = useGameStore((state) => state.soundSettings);
   const categories = useGameStore((state) => state.categories);
+  const skipGuess = useGameStore((state) => state.skipGuess);
   const currentCategoryId = useGameStore((state) => state.currentCategoryId);
   const currentCategory = categories.find((c) => c.id === currentCategoryId);
   const currentDifficulty = useGameStore((state) => state.currentDifficulty);
@@ -55,7 +53,10 @@ export default function StartTimer() {
     correctGuess();
     navigate("/startgame/turnteam");
   };
-
+  const handleSkipGuess = () => {
+    skipGuess();
+    navigate("/startgame/turnteam");
+  };
   return (
     <div className="min-h-screen bg-[#E2E8F0]">
       <div className="container mx-auto max-w-3xl px-4 py-6 text-center sm:px-6 sm:py-8">
@@ -64,7 +65,7 @@ export default function StartTimer() {
           <div className="w-full max-w-xl bg-white p-5 rounded-lg">
             <Card>
               <h1 className="font-bold text-2xl flex justify-center items-center gap-2 border-b py-4">
-                <RiTeamLine />
+                <UsersRoundIcon size={24} duration={1} color="#000000" />
                 {currentTeam.name}
               </h1>
               <p className="flex text-lg justify-center gap-2 items-center border-b py-4">
@@ -82,6 +83,7 @@ export default function StartTimer() {
                 <CountDown
                   totalTime={gameSetting.timePerTurn}
                   isRunning={hasStarted}
+                  onComplete={handleSkipGuess}
                 />
               </div>
             </Card>
@@ -103,31 +105,38 @@ export default function StartTimer() {
                   </div>
                 ) : (
                   <div className="flex flex-col justify-center items-center text-white">
-                    <EyeInvisibleOutlined className="text-4xl" />
+                    <EyeIcon size={64} duration={1} color="#ffffff" />
                     <p className="font-bold">TAP TO SEE WORD</p>
                     <small>Memorise, then hide before acting</small>
                   </div>
                 )}
               </div>
             </div>
-            <div className="flex justify-center gap-4 py-5">
+            <div className="flex flex-col justify-center gap-4 py-5">
               <Button
                 className="border px-4 py-2 rounded-lg disabled:opacity-50 w-full max-w-xl"
                 danger
                 disabled={hasStarted || rerollsLeft <= 0}
                 onClick={rerollWord}
               >
-                <RetweetOutlined />
-                Change Word ({rerollsLeft} left)
+                <CoinsIcon size={18} duration={1} />
+                Change Word ({rerollsLeft} left(-1pt))
               </Button>
               <Button
                 type="primary"
-                className="bg-green-500 hover:bg-green-600! text-white px-4 py-2 rounded-lg disabled:opacity-50 w-full max-w-xl"
+                className="w-full max-w-xl h-auto! rounded-lg! bg-green-500! px-4! py-7! text-white! hover:bg-green-600! disabled:opacity-50!"
                 disabled={!hasStarted}
                 onClick={handleCorrectGuess}
               >
-                <CheckCircleFilled />
+                <CheckIcon duration={1} size={18} />
                 Correct Guess
+              </Button>
+              <Button
+                className="w-full max-w-xl"
+                disabled={!hasStarted}
+                onClick={handleSkipGuess}
+              >
+                End turn(0pts)
               </Button>
             </div>
           </div>

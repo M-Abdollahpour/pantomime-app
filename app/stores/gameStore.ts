@@ -15,7 +15,6 @@ export const useGameStore = create<GameStore>()(
         {
           id: nanoid(),
           name: "Team 1",
-          avatarId: 1,
           playerCount: 2,
           score: 0,
           players: [
@@ -26,7 +25,6 @@ export const useGameStore = create<GameStore>()(
         {
           id: nanoid(),
           name: "Team 2",
-          avatarId: 2,
           playerCount: 2,
           score: 0,
           players: [
@@ -68,6 +66,7 @@ export const useGameStore = create<GameStore>()(
           };
         });
       },
+      usedCategoryDifficulties: [],
       updateTeamName: (id, name) => {
         set(({ teams }) => ({
           teams: teams.map((team) =>
@@ -134,20 +133,25 @@ export const useGameStore = create<GameStore>()(
         return selectedWord;
       },
       currentWord: null,
+      lastTurnWord: null,
       currentCategoryId: null,
       currentDifficulty: null,
       rerollsUsed: 0,
+      lastTurnCategoryId: null,
       lastTurnPoints: null,
       lastTurnTeamId: null,
-
       setCurrentWord: (word) => set(() => ({ currentWord: word })),
       selectWord: (categoryId, difficulty) => {
         const word = get().pickWord(categoryId, difficulty);
-        set(() => ({
+        const { teams, currentTeamIndex } = get();
+        const teamId = teams[currentTeamIndex].id;
+        const key = `${teamId}:${categoryId}:${difficulty}`;
+        set((state) => ({
           currentWord: word,
           currentCategoryId: categoryId,
           currentDifficulty: difficulty,
           rerollsUsed: 0,
+          usedCategoryDifficulties: [...state.usedCategoryDifficulties, key],
         }));
       },
       rerollWord: () => {
@@ -162,8 +166,14 @@ export const useGameStore = create<GameStore>()(
         }));
       },
       correctGuess: () => {
-        const { currentDifficulty, rerollsUsed, teams, currentTeamIndex } =
-          get();
+        const {
+          currentDifficulty,
+          rerollsUsed,
+          teams,
+          currentTeamIndex,
+          currentWord,
+          currentCategoryId,
+        } = get();
         const teamId = teams[currentTeamIndex].id;
         let points = 0;
 
@@ -183,31 +193,37 @@ export const useGameStore = create<GameStore>()(
 
         set(() => ({
           currentWord: null,
+          lastTurnWord: currentWord,
           currentCategoryId: null,
           currentDifficulty: null,
           rerollsUsed: 0,
           lastTurnPoints: points,
           lastTurnTeamId: teamId,
+          lastTurnCategoryId: currentCategoryId,
         }));
 
         get().nextTurn();
       },
       skipGuess: () => {
-        const { teams, currentTeamIndex } = get();
+        const { teams, currentTeamIndex, currentWord, currentCategoryId } =
+          get();
         const teamId = teams[currentTeamIndex].id;
         set(() => ({
           currentWord: null,
+          lastTurnWord: currentWord,
           currentCategoryId: null,
           currentDifficulty: null,
           rerollsUsed: 0,
           lastTurnPoints: 0,
           lastTurnTeamId: teamId,
+          lastTurnCategoryId: currentCategoryId,
         }));
         get().nextTurn();
       },
       resetGame: () => {
         set((state) => ({
           currentRound: 1,
+          usedCategoryDifficulties: [],
           currentTeamIndex: 0,
           usedWords: [],
           currentWord: null,

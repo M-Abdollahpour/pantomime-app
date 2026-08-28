@@ -3,7 +3,11 @@ import type { CountDownProps } from "~/types/gamePantoType";
 import { useGameStore } from "~/stores/gameStore";
 import { playSound } from "~/utils/playSound";
 
-export default function CountDown({ totalTime, isRunning }: CountDownProps) {
+export default function CountDown({
+  totalTime,
+  isRunning,
+  onComplete,
+}: CountDownProps) {
   const soundSettings = useGameStore((state) => state.soundSettings);
   const totalSeconds = totalTime;
   const [remainingSeconds, setRemainingSeconds] = useState(totalTime);
@@ -17,10 +21,8 @@ export default function CountDown({ totalTime, isRunning }: CountDownProps) {
   } else if (percentage <= 50) {
     strokeColor = "#f97316";
   }
-
   useEffect(() => {
     if (!isRunning) return;
-
     const intervalId = setInterval(() => {
       if (soundSettings.soundEffects) {
         audioRef.current?.pause();
@@ -28,13 +30,17 @@ export default function CountDown({ totalTime, isRunning }: CountDownProps) {
       }
       setRemainingSeconds((prev) => Math.max(prev - 1, 0));
     }, 1000);
-
     return () => {
       clearInterval(intervalId);
       audioRef.current?.pause();
     };
   }, [isRunning, soundSettings.soundEffects]);
-
+  useEffect(() => {
+    if (remainingSeconds === 0 && isRunning) {
+      audioRef.current?.pause();
+      onComplete?.();
+    }
+  }, [remainingSeconds]);
   return (
     <svg width="160" height="160" viewBox="0 0 160 160">
       <circle

@@ -3,6 +3,7 @@ import { type Control, type FieldErrors } from "react-hook-form";
 export type CountDownProps = {
   totalTime: number;
   isRunning: boolean;
+  onComplete?: () => void;
 };
 export type GameSettingProps = {
   title: string;
@@ -40,7 +41,6 @@ export type Player = {
 export type Team = {
   id: Id;
   name: string;
-  avatarId: number;
   playerCount: number;
   players: Player[];
   score: number;
@@ -69,6 +69,8 @@ export type GameStore = {
   usedWords: string[];
   pickWord: (categoryId: Id, difficulty: Difficulty) => string | null;
   currentWord: string | null;
+  lastTurnWord: string | null;
+  lastTurnCategoryId: Id | null;
   setCurrentWord: (word: string | null) => void;
   currentCategoryId: Id | null;
   currentDifficulty: Difficulty | null;
@@ -83,4 +85,5 @@ export type GameStore = {
   setSoundSettings: (settings: SoundSettings) => void;
   resetGame: () => void;
   resetAll: () => void;
+  usedCategoryDifficulties: string[];
 };
