@@ -12,6 +12,7 @@ import FormAddTeam from "~/components/form";
 import TeamItem from "~/components/teams";
 import Setting from "../components/setting";
 import type { TeamFormValues } from "~/types/gamePantoType";
+import EditableTitle from "~/components/editableTitle";
 
 export default function MainMenu() {
   const teams = useGameStore((state) => state.teams);
@@ -39,7 +40,6 @@ export default function MainMenu() {
   const onSubmit = ({ name }: TeamFormValues) => {
     addTeam({
       name: capitalString(name),
-      avatarId: 0,
       playerCount: 2,
       score: 0,
       players: [
@@ -57,9 +57,9 @@ export default function MainMenu() {
           <div className="flex flex-col items-center gap-4 sm:gap-5">
             <div className="w-full max-w-xl">
               <BorderBeam>
-                <Card
-                  title={<h1 className="font-bold text-2xl">PANTOMIME</h1>}
-                ></Card>
+                <Card>
+                  <EditableTitle />
+                </Card>
               </BorderBeam>
             </div>
             <span className="flex w-full max-w-xl items-center justify-center">
@@ -101,9 +101,9 @@ export default function MainMenu() {
                   title="Rounds"
                   icon={<RefreshCcw />}
                   value={gameSetting.totalRounds}
-                  min={1}
-                  max={10}
-                  step={1}
+                  min={3}
+                  max={7}
+                  step={2}
                   onChange={(newValue) =>
                     setGameSettings({ ...gameSetting, totalRounds: newValue })
                   }

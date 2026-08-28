@@ -1,599 +1,65 @@
-# 🎭 Panto Party — React Game Project
+# 🎭 Pantomime
 
-## Project Overview
+A local, pass-the-device party game where teams act out words from different categories and difficulty levels while racing against the clock. Built with React Router, Zustand, and Ant Design.
 
-Build a multiplayer **Pantomime / Charades game** using:
+## Features
 
-- React
+- **Custom teams** — Add up to 6 teams (2 minimum), each with 1–10 players and editable names.
+- **Configurable rules** — Adjust rounds (1–10) and time per turn (30–90s) before starting.
+- **12 word categories** — Food & Drink, Movies & TV, Celebrities, Landmarks, Idioms, City & Country, Kids, Animals, Sports, Jobs, Objects, and Technology — each with Easy / Medium / Hard word pools.
+- **Points-based difficulty** — Easy (3pts), Medium (5pts), Hard (7pts). Points shrink each time a team rerolls a word, so choosing wisely matters.
+- **Per-team category lock** — Once a team plays a specific category + difficulty combo, that exact combo is locked for that team for the rest of the game (other teams are unaffected).
+- **Live countdown timer** — Animated circular timer with color feedback (green → orange → red) as time runs low, plus optional tick and success sound effects.
+- **Turn results & final scoreboard** — See the word, category, and points earned after every turn, and a full ranked scoreboard (with draw detection) at the end of the game.
+- **Editable game title** — Rename the app title from the home screen; resets to "PANTOMIME" when returning home.
+- **Sound & music settings** — Toggle sound effects and party music independently.
+- **Persistent state** — Game progress, teams, and settings are saved to `localStorage` via Zustand's `persist` middleware, so a refresh won't lose your game.
+
+## Tech Stack
+
+- [React Router](https://reactrouter.com/) (framework mode) — routing
+- [Zustand](https://github.com/pmndrs/zustand) — state management, with `persist` middleware
+- [Ant Design](https://ant.design/) — UI components
+- [React Hook Form](https://react-hook-form.com/) + [Yup](https://github.com/jquense/yup) — forms & validation
+- [Tailwind CSS](https://tailwindcss.com/) — styling
 - TypeScript
-- React Hook Form
-- Zustand
-- shadcn/ui
 
-The game should be playable by multiple people in the same room.
+## Getting Started
 
-Players are divided into teams. During each turn, one player receives a secret word and acts it out without speaking. Their teammates have a limited amount of time to guess the word.
+```bash
+# install dependencies
+npm install
 
-The team with the most points at the end wins.
-
----
-
-# 🎯 Core Game Flow
-
-The application should follow this basic flow:
-
-```text
-Home
-  ↓
-Game Setup
-  ↓
-Start Game
-  ↓
-Player's Turn
-  ↓
-Correct / Skip
-  ↓
-Turn Ends
-  ↓
-Next Team
-  ↓
-...
-  ↓
-Game Over
+# run the dev server
+npm run dev
 ```
 
----
+The app will be available at `http://localhost:5173` (or whichever port your dev server prints).
 
-# ⚙️ 1. Game Setup
+## How to Play
 
-Create a setup screen where users can configure a game.
+1. **Set up teams** on the home screen — add/remove teams, rename them, and set player counts.
+2. **Adjust game settings** — number of rounds and time per turn.
+3. Hit **Start Game**. The active team and acting player are shown before each turn.
+4. **Pick a word** — choose a category, then a difficulty. Locked (already-used) combos for that team are grayed out.
+5. **Review the word**, reroll if needed (each reroll costs 1 point, up to a difficulty-based limit), then **Start Timer**.
+6. Act it out! Tap **Correct Guess** if your team guesses it, or **End Turn** / let the timer run out if not.
+7. See the **turn result**, then continue to the next team automatically.
+8. After the final round, the **Game Over** screen shows the final scoreboard and the winning team (or a draw).
+9. **Play Again** keeps the same teams with scores reset, or go **Back to Home** to fully reset everything.
 
-The setup form must use **React Hook Form**.
+## Project Structure (high level)
 
-### Required fields
-
-**Game name**
-
-```text
-[ Friday Night Panto ]
+```
+app/
+├── routes/            # StartGame, PickWord, StartTimer, TurnTeam, GameOver, etc.
+├── stores/            # gameStore.ts — the single Zustand store for all game state
+├── components/        # Reusable UI: GameSetting, TeamItem, FormAddTeam, CountDown, etc.
+├── data/              # categories.ts — word lists per category/difficulty
+├── types/             # Shared TypeScript types (GameStore, Team, Category, etc.)
+└── utils/             # Helper functions (capitalString, playSound, etc.)
 ```
 
-**Teams**
+## License
 
-At least 2 teams must be created.
-
-Each team should have:
-
-- Team name
-- At least 1 player
-
-Example:
-
-```text
-🐯 Tigers
-
-[ Alex  ] ×
-[ Sarah ] ×
-
-[ + Add Player ]
-```
-
-Users should be able to:
-
-- Add a team
-- Remove a team
-- Rename a team
-- Add players
-- Remove players
-
-### Game settings
-
-Allow the user to select:
-
-**Number of rounds**
-
-```text
-3
-5
-7
-```
-
-**Turn duration**
-
-```text
-30 seconds
-60 seconds
-90 seconds
-```
-
----
-
-# 📝 2. Form Validation
-
-Use React Hook Form validation.
-
-At minimum:
-
-- Game name is required.
-- Team name is required.
-- Player name is required.
-- At least 2 teams are required.
-- Every team must have at least 1 player.
-- A valid number of rounds must be selected.
-
-Display useful error messages.
-
----
-
-# 🎮 3. Game Screen
-
-After clicking **Start Game**, display the current turn.
-
-The screen should show:
-
-```text
-┌─────────────────────────────────┐
-│          PANTO PARTY            │
-│                                 │
-│       🐯 TIGERS' TURN           │
-│                                 │
-│          Alex is acting         │
-│                                 │
-│             42                  │
-│           seconds               │
-│                                 │
-│       ┌─────────────────┐       │
-│       │   SECRET WORD   │       │
-│       │                 │       │
-│       │    SPIDER-MAN   │       │
-│       └─────────────────┘       │
-│                                 │
-│    [ ✓ CORRECT ]  [ SKIP ]     │
-│                                 │
-│       Tigers: 5   Bears: 3     │
-└─────────────────────────────────┘
-```
-
-The secret word should only be visible to the actor.
-
-You can implement this with a **"Reveal Word"** button.
-
----
-
-# ⏱️ 4. Timer
-
-Each turn has a countdown timer.
-
-For example:
-
-```text
-60 → 59 → 58 → ... → 0
-```
-
-The timer must:
-
-- Start when the turn starts.
-- Count down every second.
-- Stop when the turn ends.
-- Automatically end the turn when it reaches zero.
-
-Use React appropriately for handling the timer.
-
----
-
-# ✅ 5. Correct Answer
-
-When the team guesses correctly, the actor presses:
-
-```text
-✓ Correct
-```
-
-The team receives **1 point**.
-
-A new word should appear and the game continues until the timer runs out.
-
-Example:
-
-```text
-Spider-Man    ✓ +1
-Pizza         ✓ +1
-Swimming      ✓ +1
-Batman        ✓ +1
-```
-
----
-
-# ⏭️ 6. Skip
-
-The actor can skip a word:
-
-```text
-→ Skip
-```
-
-Skipping:
-
-- Does not give the team a point.
-- Generates a new word.
-- Does not end the turn.
-
----
-
-# 🔄 7. Turn Management
-
-Teams take turns.
-
-For example:
-
-```text
-Round 1
-Tigers → Alex
-Bears  → John
-
-Round 2
-Tigers → Sarah
-Bears  → Emma
-
-Round 3
-Tigers → Alex
-Bears  → John
-```
-
-The game should automatically determine:
-
-- Current team
-- Current player
-- Next team
-- Next player
-- Current round
-
-Players within each team should rotate.
-
----
-
-# 🏆 8. Scoreboard
-
-Display the current score during the game.
-
-Example:
-
-```text
-🏆 SCORE
-
-🐯 Tigers     8
-🐻 Bears      6
-```
-
-The score must update immediately after a correct answer.
-
----
-
-# 🏁 9. Game Over
-
-When all rounds are completed, display a results screen.
-
-Example:
-
-```text
-             🏆 GAME OVER
-
-          TIGERS WIN!
-
-             12 POINTS
-
-     🐯 Tigers       12
-     🐻 Bears         9
-
-          [ Play Again ]
-          [ New Game ]
-```
-
-If the scores are equal:
-
-```text
-🤝 IT'S A DRAW!
-```
-
----
-
-# 🗃️ 10. Word Bank
-
-Create a local word bank containing at least **30 words/phrases**.
-
-You can store them in a TypeScript or JSON file.
-
-Example:
-
-```ts
-type Word = {
-  id: string;
-  text: string;
-};
-```
-
-Example words:
-
-```text
-Spider-Man
-Pizza
-Swimming
-Elephant
-Harry Potter
-Playing football
-Sleeping
-Superman
-Cooking
-```
-
-Words should be selected randomly.
-
-Try to avoid showing the same word repeatedly during a single turn.
-
----
-
-# 🧠 11. Zustand
-
-Use **Zustand to manage the game's global state**.
-
-The store should contain the important game state, such as:
-
-```text
-teams
-players
-scores
-current round
-current team
-current player
-current word
-game status
-```
-
-Create actions for operations such as:
-
-```text
-startGame()
-correctAnswer()
-skipWord()
-endTurn()
-nextTurn()
-resetGame()
-```
-
-You are free to design the store structure.
-
----
-
-# 🎨 12. shadcn/ui
-
-Use shadcn/ui components throughout the application.
-
-At minimum, use appropriate shadcn components for:
-
-- Buttons
-- Inputs
-- Forms
-- Cards
-- Dialogs
-- Badges
-- Progress/timer
-
-You don't need to use every shadcn component.
-
-Focus on creating a clean and usable interface.
-
----
-
-# 📱 13. Responsive UI
-
-The game should work on:
-
-- Desktop
-- Tablet
-- Mobile
-
-Pay particular attention to the game screen.
-
-The timer, secret word, buttons, and scoreboard should be easy to use on a phone.
-
----
-
-# ⭐ EXTRA FEATURES
-
-These features are **not required**, but can be implemented for extra credit.
-
-## ⭐ Categories
-
-Add categories such as:
-
-```text
-🎬 Movies
-🐶 Animals
-🏃 Actions
-🍔 Food
-🎮 Games
-🎵 Music
-```
-
-Allow players to select categories during setup.
-
----
-
-## ⭐ Difficulty
-
-Add difficulty levels:
-
-```text
-🟢 Easy
-🟡 Medium
-🔴 Hard
-```
-
-Different difficulties can give different points.
-
----
-
-## ⭐ Custom Words
-
-Allow users to add their own words using React Hook Form.
-
-```text
-Add Custom Word
-
-[ __________________ ]
-
-[ Add Word ]
-```
-
----
-
-## ⭐ Game Statistics
-
-Track:
-
-- Correct answers
-- Skipped words
-- Player performance
-- Team performance
-
-Display the statistics on the results screen.
-
----
-
-## ⭐ Game Persistence
-
-Use Zustand's `persist` middleware to save the game.
-
-If the browser is refreshed, the current game should be recoverable.
-
----
-
-## ⭐ Game History
-
-Store completed games and display:
-
-```text
-Previous Games
-
-Friday Night
-Tigers 12 - Bears 9
-
-Saturday Night
-Bears 15 - Tigers 11
-```
-
----
-
-## ⭐ Special Challenges
-
-Add random challenges such as:
-
-**🤫 Silent Mode**
-
-Actor cannot make any sound.
-
-**🐌 Slow Motion**
-
-Actor must act in slow motion.
-
-**👥 Duo**
-
-Two players must act together.
-
----
-
-## ⭐ Animations & Sound
-
-Add:
-
-- Score animations
-- Victory animation
-- Countdown sound
-- Correct-answer sound
-- Game-over animation
-
-Keep animations subtle and don't sacrifice usability.
-
----
-
-# 📋 MVP Checklist
-
-Your project is complete when it has:
-
-- [ ] React + TypeScript
-- [ ] React Hook Form
-- [ ] Zustand
-- [ ] shadcn/ui
-- [ ] Game setup
-- [ ] At least 2 teams
-- [ ] Players
-- [ ] Configurable rounds
-- [ ] Configurable timer
-- [ ] Random words
-- [ ] Secret word
-- [ ] Correct button
-- [ ] Skip button
-- [ ] Score system
-- [ ] Turn management
-- [ ] Countdown timer
-- [ ] Scoreboard
-- [ ] Game-over screen
-- [ ] Form validation
-- [ ] Responsive UI
-
-Everything under **Extra Features** is optional.
-
----
-
-# 🏆 Evaluation
-
-### Functionality — 35%
-
-Does the game actually work?
-
-### React & Architecture — 20%
-
-- Components
-- Reusability
-- Clean structure
-- Separation of concerns
-
-### Zustand — 15%
-
-- Appropriate global state
-- Store structure
-- Actions
-
-### React Hook Form — 10%
-
-- Form implementation
-- Validation
-- Dynamic teams/players
-
-### UI/UX — 15%
-
-- shadcn/ui
-- Responsive design
-- Usability
-- Visual quality
-
-### Code Quality — 5%
-
-- TypeScript
-- Naming
-- Maintainability
-- Clean code
-
----
-
-# 💡 Final Challenge
-
-The goal isn't simply to satisfy the checklist.
-
-Build something that you could actually use at a party.
-
-Ask yourself:
-
-> **"If I gave this game to five friends, would they immediately understand how to play it?"**
-
-A good project should be **functional, intuitive, responsive, and fun.** 🎭
+This project is for personal/educational use. Add a license of your choice if you plan to distribute it.

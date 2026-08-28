@@ -13,6 +13,7 @@ export default function PickWord() {
   const categories = useGameStore((state) => state.categories);
   const team = useGameStore((state) => state.teams);
   const currentTeamIndex = useGameStore((state) => state.currentTeamIndex);
+  const gameTitle = useGameStore((state) => state.gameTitle);
   const currentTeam = team[currentTeamIndex];
   const selectWord = useGameStore((state) => state.selectWord);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
@@ -49,6 +50,9 @@ export default function PickWord() {
       <div className="container mx-auto max-w-3xl px-4 py-6 text-center sm:px-6 sm:py-8">
         <div className="flex flex-col items-center gap-4 sm:gap-5 bg-[#F8FAFC] rounded-lg py-5">
           <CloseGame />
+          <h1 className="text-4xl font-bold border rounded-lg px-7 py-2 bg-gray-300">
+            {gameTitle}
+          </h1>
           <h1 className="flex gap-1 items-center justify-center text-xl bg-gray-100 px-5 py-2 rounded-lg">
             <PiMicrosoftWordLogoLight />
             Word Selection For

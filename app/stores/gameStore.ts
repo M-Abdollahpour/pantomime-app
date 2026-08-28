@@ -7,7 +7,7 @@ import {
   DIFFICULTY_POINTS,
   MAX_REROLLS_BY_DIFFICULTY,
 } from "~/types/categoryType";
-
+const DEFAULT_TITLE = "PANTOMIME";
 export const useGameStore = create<GameStore>()(
   persist(
     (set, get) => ({
@@ -238,6 +238,7 @@ export const useGameStore = create<GameStore>()(
       resetAll: () => {
         get().resetGame();
         set(() => ({
+          gameTitle: DEFAULT_TITLE,
           gameSettings: {
             timePerTurn: 60,
             totalRounds: 3,
@@ -276,6 +277,10 @@ export const useGameStore = create<GameStore>()(
         set(() => ({
           soundSettings: settings,
         }));
+      },
+      gameTitle: DEFAULT_TITLE,
+      setGameTitle: (title) => {
+        set(() => ({ gameTitle: title }));
       },
     }),
     {

@@ -11,6 +11,7 @@ export default function GameOver() {
   const resetGame = useGameStore((state) => state.resetGame);
   const sortedTeams = [...teams].sort((a, b) => b.score - a.score);
   const resetAll = useGameStore((state) => state.resetAll);
+  const gameTitle = useGameStore((state) => state.gameTitle);
   const winner = sortedTeams[0];
   const topScore = sortedTeams[0]?.score;
   const winningTeams = sortedTeams.filter((team) => team.score === topScore);
@@ -30,7 +31,10 @@ export default function GameOver() {
         <div className="flex flex-col gap-4">
           <Card>
             <div>
-              <h1 className="text-4xl font-bold mb-2">Game Over</h1>
+              <h1 className="text-4xl font-bold border rounded-lg px-7 py-2 bg-gray-300">
+                {gameTitle}
+              </h1>
+              <h1 className="text-3xl font-bold mb-2">Game Over</h1>
               {winningTeams.length > 1 ? (
                 <p className="mb-6 text-xl">🤝 IT'S A DRAW!</p>
               ) : (
@@ -78,7 +82,7 @@ export default function GameOver() {
               >
                 <div className="flex gap-2 items-center text-xl">
                   <IoHome />
-                  Back to Home
+                  New Game
                 </div>
               </Button>
             </div>

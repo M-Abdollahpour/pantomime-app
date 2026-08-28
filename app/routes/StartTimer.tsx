@@ -28,6 +28,7 @@ export default function StartTimer() {
   const playerIndex = (currentRound - 1) % currentTeam.players.length;
   const actingPlayer = currentTeam.players[playerIndex];
   const currentWord = useGameStore((state) => state.currentWord);
+  const gameTitle = useGameStore((state) => state.gameTitle);
   const rerollWord = useGameStore((state) => state.rerollWord);
   const correctGuess = useGameStore((state) => state.correctGuess);
   const soundSettings = useGameStore((state) => state.soundSettings);
@@ -62,6 +63,9 @@ export default function StartTimer() {
       <div className="container mx-auto max-w-3xl px-4 py-6 text-center sm:px-6 sm:py-8">
         <div className="flex flex-col items-center gap-4 sm:gap-5 bg-[#F8FAFC] rounded-lg py-5">
           <CloseGame />
+          <h1 className="text-4xl font-bold border rounded-lg px-7 py-2 bg-gray-300">
+            {gameTitle}
+          </h1>
           <div className="w-full max-w-xl bg-white p-5 rounded-lg">
             <Card>
               <h1 className="font-bold text-2xl flex justify-center items-center gap-2 border-b py-4">

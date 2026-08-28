@@ -86,4 +86,6 @@ export type GameStore = {
   resetGame: () => void;
   resetAll: () => void;
   usedCategoryDifficulties: string[];
+  gameTitle: string;
+  setGameTitle: (title: string) => void;
 };
