@@ -55,6 +55,9 @@ export default function StartTimer() {
     navigate("/startgame/turnteam");
   };
   const handleSkipGuess = () => {
+    if (soundSettings.soundEffects) {
+      playSound("/sounds/wronganswer.mp3");
+    }
     skipGuess();
     navigate("/startgame/turnteam");
   };

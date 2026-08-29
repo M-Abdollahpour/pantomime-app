@@ -41,7 +41,7 @@ export default function EditableTitle() {
   };
 
   return (
-    <form onBlur={handleSubmit(onSubmit)}>
+    <form className="relative" onBlur={handleSubmit(onSubmit)}>
       <Controller
         name="title"
         control={control}
@@ -53,7 +53,7 @@ export default function EditableTitle() {
         )}
       />
       {errors.title && (
-        <small className="text-red-600 block text-center absolute left-5 bottom-1">
+        <small className="text-red-600 block text-center absolute left-0 -bottom">
           {errors.title.message}
         </small>
       )}

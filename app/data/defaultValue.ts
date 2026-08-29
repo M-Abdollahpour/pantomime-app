@@ -41,7 +41,7 @@ export const DEFAULT_VALUE = {
   lastTurnCategoryId: null,
   lastTurnPoints: null,
   lastTurnTeamId: null,
-  gameTitle: "PANTOMIME",
+  gameTitle: "PANTOMIME PARTY",
   soundSettings: {
     soundEffects: true,
     partyMusic: true,
