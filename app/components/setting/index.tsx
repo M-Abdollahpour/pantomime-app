@@ -2,7 +2,6 @@ import { Cog, Volume2 } from "lucide-react";
 import { useState } from "react";
 import { Button, Modal, Switch } from "antd";
 import { useGameStore } from "~/stores/gameStore";
-import { GiPlayerTime } from "react-icons/gi";
 
 export default function Setting() {
   const soundSettings = useGameStore((state) => state.soundSettings);

@@ -1,7 +1,7 @@
 import { Button, Input } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { Controller } from "react-hook-form";
-import type { FormAddTeamProps } from "~/types/gamePantoType";
+import type { FormAddTeamProps } from "~/types/componentsType";
 import { TriangleAlert } from "lucide-react";
 
 const FormAddTeam = ({

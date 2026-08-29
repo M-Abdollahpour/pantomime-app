@@ -1,6 +1,6 @@
 import { Button } from "antd";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
-import type { GameSettingProps } from "~/types/gamePantoType";
+import type { GameSettingProps } from "~/types/componentsType";
 
 const GameSetting = ({
   title,

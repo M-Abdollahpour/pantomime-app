@@ -11,8 +11,8 @@ import GameSetting from "~/components/gameSetting";
 import FormAddTeam from "~/components/form";
 import TeamItem from "~/components/teams";
 import Setting from "../components/setting";
-import type { TeamFormValues } from "~/types/gamePantoType";
 import EditableTitle from "~/components/editableTitle";
+import type { TeamFormValues } from "~/types/componentsType";
 
 export default function MainMenu() {
   const teams = useGameStore((state) => state.teams);

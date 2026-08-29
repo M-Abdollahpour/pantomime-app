@@ -9,18 +9,18 @@ import { GiFireDash } from "react-icons/gi";
 import { PiMicrosoftWordLogoLight } from "react-icons/pi";
 
 export default function PickWord() {
-  const navigate = useNavigate();
   const categories = useGameStore((state) => state.categories);
   const team = useGameStore((state) => state.teams);
   const currentTeamIndex = useGameStore((state) => state.currentTeamIndex);
   const gameTitle = useGameStore((state) => state.gameTitle);
-  const currentTeam = team[currentTeamIndex];
   const selectWord = useGameStore((state) => state.selectWord);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
-    null,
-  );
   const usedCategoryDifficulties = useGameStore(
     (state) => state.usedCategoryDifficulties,
+  );
+  const navigate = useNavigate();
+  const currentTeam = team[currentTeamIndex];
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null,
   );
   const isDifficultyUsed = (difficulty: Difficulty) => {
     if (!selectedCategoryId) return false;
@@ -34,7 +34,7 @@ export default function PickWord() {
   const isCategorySelected = !!selectedCategoryId;
   const handleCategorySelect = (categoryId: string) => {
     setSelectedCategoryId((prev) => (prev === categoryId ? null : categoryId));
-    setSelectedDifficulty(null); // چون کتگوری عوض شده، سختی قبلی دیگه معتبر نیست
+    setSelectedDifficulty(null);
   };
   const handleDifficultySelect = (difficulty: Difficulty) => {
     if (!selectedCategoryId) return;

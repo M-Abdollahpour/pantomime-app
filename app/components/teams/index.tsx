@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { capitalString } from "~/utils/capitalString";
-import type { TeamItemProps } from "~/types/gamePantoType";
+import type { TeamItemProps } from "~/types/componentsType";
 
 const TeamItem = ({
   title,

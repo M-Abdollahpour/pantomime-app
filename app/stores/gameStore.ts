@@ -1,44 +1,17 @@
-import { nanoid } from "nanoid";
 import { create } from "zustand";
-import type { GameStore } from "~/types/gamePantoType";
 import { persist } from "zustand/middleware";
-import { CATEGORIES } from "../data/categories";
+import { nanoid } from "nanoid";
+import type { GameStore } from "~/types/gameStoreType";
 import {
   DIFFICULTY_POINTS,
   MAX_REROLLS_BY_DIFFICULTY,
 } from "~/types/categoryType";
-const DEFAULT_TITLE = "PANTOMIME";
+import { DEFAULT_VALUE } from "~/data/defaultValue";
+
 export const useGameStore = create<GameStore>()(
   persist(
     (set, get) => ({
-      teams: [
-        {
-          id: nanoid(),
-          name: "Team 1",
-          playerCount: 2,
-          score: 0,
-          players: [
-            { id: nanoid(), name: "Player 1" },
-            { id: nanoid(), name: "Player 2" },
-          ],
-        },
-        {
-          id: nanoid(),
-          name: "Team 2",
-          playerCount: 2,
-          score: 0,
-          players: [
-            { id: nanoid(), name: "Player 1" },
-            { id: nanoid(), name: "Player 2" },
-          ],
-        },
-      ],
-      gameSettings: {
-        timePerTurn: 60,
-        totalRounds: 3,
-      },
-      currentRound: 1,
-      currentTeamIndex: 0,
+      ...DEFAULT_VALUE,
       nextTurn: () => {
         set(({ teams, currentTeamIndex, currentRound }) => {
           const isLastTeam = currentTeamIndex === teams.length - 1;
@@ -66,7 +39,6 @@ export const useGameStore = create<GameStore>()(
           };
         });
       },
-      usedCategoryDifficulties: [],
       updateTeamName: (id, name) => {
         set(({ teams }) => ({
           teams: teams.map((team) =>
@@ -114,8 +86,6 @@ export const useGameStore = create<GameStore>()(
           ),
         }));
       },
-      categories: CATEGORIES,
-      usedWords: [],
       pickWord: (categoryId, difficulty) => {
         const { categories, usedWords } = get();
         const category = categories.find((c) => c.id === categoryId);
@@ -132,14 +102,6 @@ export const useGameStore = create<GameStore>()(
         }));
         return selectedWord;
       },
-      currentWord: null,
-      lastTurnWord: null,
-      currentCategoryId: null,
-      currentDifficulty: null,
-      rerollsUsed: 0,
-      lastTurnCategoryId: null,
-      lastTurnPoints: null,
-      lastTurnTeamId: null,
       setCurrentWord: (word) => set(() => ({ currentWord: word })),
       selectWord: (categoryId, difficulty) => {
         const word = get().pickWord(categoryId, difficulty);
@@ -176,7 +138,6 @@ export const useGameStore = create<GameStore>()(
         } = get();
         const teamId = teams[currentTeamIndex].id;
         let points = 0;
-
         if (currentDifficulty) {
           points = Math.max(
             0,
@@ -190,7 +151,6 @@ export const useGameStore = create<GameStore>()(
             ),
           }));
         }
-
         set(() => ({
           currentWord: null,
           lastTurnWord: currentWord,
@@ -201,7 +161,6 @@ export const useGameStore = create<GameStore>()(
           lastTurnTeamId: teamId,
           lastTurnCategoryId: currentCategoryId,
         }));
-
         get().nextTurn();
       },
       skipGuess: () => {
@@ -221,7 +180,7 @@ export const useGameStore = create<GameStore>()(
         get().nextTurn();
       },
       resetGame: () => {
-        set((state) => ({
+        set(() => ({
           currentRound: 1,
           usedCategoryDifficulties: [],
           currentTeamIndex: 0,
@@ -232,53 +191,27 @@ export const useGameStore = create<GameStore>()(
           rerollsUsed: 0,
           lastTurnPoints: null,
           lastTurnTeamId: null,
-          teams: state.teams.map((team) => ({ ...team, score: 0 })),
+          teams: DEFAULT_VALUE.teams.map((team) => ({ ...team, score: 0 })),
         }));
       },
       resetAll: () => {
-        get().resetGame();
-        set(() => ({
-          gameTitle: DEFAULT_TITLE,
-          gameSettings: {
-            timePerTurn: 60,
-            totalRounds: 3,
-          },
-          teams: [
-            {
+        set({
+          ...DEFAULT_VALUE,
+          teams: DEFAULT_VALUE.teams.map((team) => ({
+            ...team,
+            id: nanoid(),
+            players: team.players.map((player) => ({
+              ...player,
               id: nanoid(),
-              name: "Team 1",
-              avatarId: 1,
-              playerCount: 2,
-              score: 0,
-              players: [
-                { id: nanoid(), name: "Player 1" },
-                { id: nanoid(), name: "Player 2" },
-              ],
-            },
-            {
-              id: nanoid(),
-              name: "Team 2",
-              avatarId: 2,
-              playerCount: 2,
-              score: 0,
-              players: [
-                { id: nanoid(), name: "Player 1" },
-                { id: nanoid(), name: "Player 2" },
-              ],
-            },
-          ],
-        }));
-      },
-      soundSettings: {
-        soundEffects: true,
-        partyMusic: true,
+            })),
+          })),
+        });
       },
       setSoundSettings: (settings) => {
         set(() => ({
           soundSettings: settings,
         }));
       },
-      gameTitle: DEFAULT_TITLE,
       setGameTitle: (title) => {
         set(() => ({ gameTitle: title }));
       },

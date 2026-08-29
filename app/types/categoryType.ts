@@ -1,4 +1,4 @@
-import type { Id } from "./gamePantoType";
+import type { Id } from "./gameStoreType";
 export type Difficulty = "easy" | "medium" | "hard";
 export const DIFFICULTY_POINTS: Record<Difficulty, number> = {
   easy: 3,

@@ -20,7 +20,7 @@ export default function GameOver() {
     resetGame();
     navigate("/startgame");
   };
-  const handleGoHome = () => {
+  const handleNewGame = () => {
     resetAll();
     navigate("/");
   };
@@ -78,7 +78,7 @@ export default function GameOver() {
               <Button
                 type="text"
                 className="border! bg-gray-300! py-7! rounded-lg! hover:bg-gray-100! transition-all!"
-                onClick={handleGoHome}
+                onClick={handleNewGame}
               >
                 <div className="flex gap-2 items-center text-xl">
                   <IoHome />

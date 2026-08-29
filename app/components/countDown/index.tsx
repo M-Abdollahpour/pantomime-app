@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import type { CountDownProps } from "~/types/gamePantoType";
 import { useGameStore } from "~/stores/gameStore";
+import type { CountDownProps } from "~/types/componentsType";
 import { playSound } from "~/utils/playSound";
 
 export default function CountDown({

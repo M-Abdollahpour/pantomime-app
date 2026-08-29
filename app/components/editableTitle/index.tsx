@@ -53,7 +53,7 @@ export default function EditableTitle() {
         )}
       />
       {errors.title && (
-        <small className="text-red-600 block text-center">
+        <small className="text-red-600 block text-center absolute left-5 bottom-1">
           {errors.title.message}
         </small>
       )}
